@@ -14,3 +14,8 @@ a) model training
 b) model evaluation
 c) model exporting
 d) model conversion
+
+
+Data:
+
+Place training and validation data in tfrecord format
