@@ -1,0 +1,55 @@
+This documemnt contains detailed steps to reproduce model training / evaluation and conversion with all the training hyperparameters
+
+Training from scratch: tf_gpu_15
+
+Step 1:
+capture images to create dataset that contains two classes: birds and squirrels.
+Use tensorflow model/research/slim to preprocess data and create trainting and validation data in tfrecord format
+
+python download_and_convert_data.py --dataset_name=flowers --dataset_dir=../data/animal_photos/
+
+
+Step 2: 
+train the model
+python ./research/slim/train_image_classifier.py --train_dir=../Model/animals --dataset_name=flowers --dataset_split_name=train --dataset_dir=../data/animal_photos/ --model_name=mobilenet_v1_025 --preprocessing_name=mobilenet_v1 --train_image_size=96 --use_grayscale=True --save_summaries_secs=300 --learning_rate=0.045 --label_smoothing=0.1 --learning_rate_decay_factor=0.98 --num_epochs_per_decay=2.5 --moving_average_decay=0.9999 --batch_size=32 --max_number_of_steps=100000
+
+
+Step 3:
+eval the model
+python ./research/slim/eval_image_classifier.py \
+    --alsologtostderr \
+    --checkpoint_path=../Model/animals/model.ckpt-100000 \
+    --dataset_dir=../data/animal_photos/ \
+    --dataset_name=flowers \
+    --dataset_split_name=validation \
+    --model_name=mobilenet_v1_025 \
+    --preprocessing_name=mobilenet_v1 \
+    --use_grayscale=True \
+    --train_image_size=96
+	
+	
+Step 4:
+export the pretrained model
+python ./research/slim/export_inference_graph.py \
+    --alsologtostderr \
+    --dataset_name=flowers \
+    --model_name=mobilenet_v1_025 \
+    --image_size=96 \
+    --use_grayscale=True \
+    --output_file=../Model/vww_96_grayscale_graph.pb
+
+Step 5: 
+freeze the model
+python ./freeze_graph.py \
+--input_graph=./Model/animals/vww_96_grayscale_graph.pb \
+--input_checkpoint=./Model/animals/model.ckpt-100000 \
+--input_binary=true --output_graph=./Model/animals/vww_96_grayscale_frozen.pb \
+--output_node_names=MobilenetV1/Predictions/Reshape_1
+
+
+Step 6:
+quantize the model and convert it to .cc
+python model_conversion.py
+
+xxd -i ./models/animals/vww_96_grayscale_quantized.tflite > ./models/animals/person_detect_model_data.cc
+
