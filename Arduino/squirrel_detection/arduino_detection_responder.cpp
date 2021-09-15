@@ -32,6 +32,7 @@ void RespondToDetection(tflite::ErrorReporter* error_reporter,
     pinMode(LEDR, OUTPUT);
     pinMode(LEDG, OUTPUT);
     pinMode(LEDB, OUTPUT);
+    pinMode(7, OUTPUT);
     is_initialized = true;
   }
 
@@ -49,9 +50,15 @@ void RespondToDetection(tflite::ErrorReporter* error_reporter,
 
   // Switch on the green LED when a squirrel is detected,
   // the red when no person is detected
-  if (squirrel_score > bird_score) {
+  if (squirrel_score > 90) {
     digitalWrite(LEDG, LOW);
     digitalWrite(LEDR, HIGH);
+    tone(7, 550, 100);
+    delay(100);
+    tone(7, 550, 100);
+    delay(100);
+    tone(7, 620, 300);
+    delay(300);
   } else {
     digitalWrite(LEDG, HIGH);
     digitalWrite(LEDR, LOW);
