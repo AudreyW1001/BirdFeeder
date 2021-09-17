@@ -12,7 +12,7 @@ Scripts:
 Contains all scripts to reproduce model training and conversion steps:
 a) model training 
 b) model evaluation
-c) model exporting
+c) model quantizatoin and exporting
 d) model conversion
 
 
