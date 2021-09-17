@@ -1,7 +1,7 @@
 # BirdFeeder
 Arduino
 
-Contains arduino scketch for bird-squirrel detection. Place the squirrel_detection folder under Harvard_tinyMLx/examples library
+Contains arduino scketch for bird-squirrel detection, and speaker integration. Place the squirrel_detection folder under Harvard_tinyMLx/examples library
 
 Model:
 
